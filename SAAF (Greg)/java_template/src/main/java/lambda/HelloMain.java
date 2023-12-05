@@ -19,10 +19,10 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
     @Override
     public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
         LambdaLogger logger = context.getLogger();
-        String bucketName = "462projectbucket"; // Replace with your actual bucket name
-        String inputFileKey = "data.csv"; // Replace with the actual S3 key for the input file
-        String outputFileKey = "output.csv"; // Replace with the desired S3 key for the output file
-        String outputFilePath = "/tmp/output.csv"; // Temporary file path in Lambda's writable directory
+        String bucketName = "462projectbucket"; 
+        String inputFileKey = "data.csv"; 
+        String outputFileKey = "output.csv"; 
+        String outputFilePath = "/tmp/output.csv"; 
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("us-east-2").build();
         HashMap<String, Object> response = new HashMap<>();
