@@ -1,4 +1,6 @@
 package lambda;
+
+import com.amazonaws.Response;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -19,17 +21,15 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import saaf.Inspector;
 
-import saaf.Response;
 ;
+
 /**
  * uwt.lambda_test::handleRequest
  *
  * @author Wes Lloyd
  * @author Robert Cordingly
  */
-public class HelloSqlite
-  implements RequestHandler<Request, HashMap<String, Object>> {
-
+public class HelloSqlite implements RequestHandler<Request, HashMap<String, Object>> {
   /**
    * Lambda Function Handler
    *
@@ -37,114 +37,71 @@ public class HelloSqlite
    * @param context
    * @return HashMap that Lambda will automatically convert into JSON.
    */
+  @Override
   public HashMap<String, Object> handleRequest(Request request, Context context) {
-    // Create logger
     LambdaLogger logger = context.getLogger();
+    HashMap<String, Object> response = new HashMap<>();
 
-    //Collect inital data.
-    Inspector inspector = new Inspector();
-    inspector.inspectAll();
-
-    //****************START FUNCTION IMPLEMENTATION*************************
-    //Add custom key/value attribute to SAAF's output. (OPTIONAL)
-    //Grabbing our CSV from the bucket.
-    String bucketname = request.getBucketname();
-    String filename = request.getFilename();
-    AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
-
-    //get object file using source bucket and srcKey name
-    S3Object s3Object = s3Client.getObject(
-      new GetObjectRequest(bucketname, filename)
-    );
-    //get content of the file
     try {
-      // Connection string an in-memory SQLite DB
-      Connection con = DriverManager.getConnection("jdbc:sqlite:");
+      AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
+      S3Object s3Object = s3Client.getObject(new GetObjectRequest(request.getBucketname(), request.getFilename()));
+      try (Connection con = DriverManager.getConnection("jdbc:sqlite:");
+          InputStream objectData = s3Object.getObjectContent();
+          Scanner scanner = new Scanner(objectData)) {
 
-      // Connection string for a file-based SQlite DB
-      //Connection con = DriverManager.getConnection("jdbc:sqlite:/tmp/mytest.db");
+        ensureTableExists(con, logger);
+        insertDataIntoTable(scanner, con, logger);
+        response.put("OrderIDs", queryTable(con, logger));
+      } catch (Exception e) {
+        logger.log("Database or S3 Error: " + e.getMessage());
+        response.put("error", e.getMessage());
+      }
 
-      // Detect if the table 'mytable' exists in the database
-      // Check if 'mytable' exists and create it if not
-      PreparedStatement ps = con.prepareStatement(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='mytable'"
-      );
+      Thread.sleep(200); // Ensuring separate Lambda instances for concurrent calls
+    } catch (Exception e) {
+      logger.log("Error: " + e.getMessage());
+      response.put("error", e.getMessage());
+    }
+
+    return response;
+  }
+
+  private void ensureTableExists(Connection con, LambdaLogger logger) throws Exception {
+    try (PreparedStatement ps = con
+        .prepareStatement("SELECT name FROM sqlite_master WHERE type='table' AND name='mytable'")) {
       ResultSet rs = ps.executeQuery();
       if (!rs.next()) {
         logger.log("Table 'mytable' does not exist. Creating it.");
-        ps =
-          con.prepareStatement(
-            "CREATE TABLE mytable (Region TEXT, Country TEXT, [Item Type] TEXT, [Sales Channel] TEXT, [Order Priority] TEXT, [Order Date] TEXT, [Order ID] TEXT, [Ship Date] TEXT, [Units Sold] TEXT, [Unit Price] TEXT, [Unit Cost] TEXT, [Total Revenue] TEXT, [Total Cost] TEXT, [Total Profit] TEXT, [Order Processing Time] TEXT, [Gross Margin] TEXT)"
-          );
-        ps.execute();
-      }
-      rs.close();
-
-      InputStream objectData = s3Object.getObjectContent();
-      Scanner scanner = new Scanner(objectData);
-      String sql =
-        "INSERT INTO mytable (Region, Country, [Item Type], [Sales Channel], [Order Priority], [Order Date], [Order ID], [Ship Date], [Units Sold], [Unit Price], [Unit Cost], [Total Revenue], [Total Cost], [Total Profit], [Order Processing Time], [Gross Margin]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-      try {
-        ps = con.prepareStatement(sql);
-        while (scanner.hasNextLine()) {
-          String line = scanner.nextLine();
-          String[] words = line.split(",");
-          int i = 1;
-          for (String word : words) {
-            ps.setString(i++, word);
-          }
-          ps.executeUpdate();
+        try (PreparedStatement createTable = con.prepareStatement(
+            "CREATE TABLE mytable (Region TEXT, Country TEXT, [Item Type] TEXT, [Sales Channel] TEXT, [Order Priority] TEXT, [Order Date] TEXT, [Order ID] TEXT, [Ship Date] TEXT, [Units Sold] TEXT, [Unit Price] TEXT, [Unit Cost] TEXT, [Total Revenue] TEXT, [Total Cost] TEXT, [Total Profit] TEXT, [Order Processing Time] TEXT, [Gross Margin] TEXT)")) {
+          createTable.execute();
         }
-      } catch (SQLException e) {
-        e.printStackTrace(); // Handle the exception properly
-      } finally {
-        // Close resources
-        scanner.close();
-        ps.close();
       }
-
-      //Create and populate a separate response object for function output. (OPTIONAL)
-      Response r = new Response();
-
-      String pwd = System.getProperty("user.dir");
-      logger.log("pwd=" + pwd);
-      logger.log("set pwd to tmp");
-      setCurrentDirectory("/tmp");
-      pwd = System.getProperty("user.dir");
-      logger.log("pwd=" + pwd);
-
-      // Query mytable to obtain full resultset
-      ps = con.prepareStatement("select * from mytable;");
-      rs = ps.executeQuery();
-
-      // Load query results for [name] column into a Java Linked List
-      // ignore [col2] and [col3]
-      LinkedList<String> ll = new LinkedList<String>();
-      while (rs.next()) {
-        logger.log("Order ID=" + rs.getString("Order ID"));
-        ll.add(rs.getString("Order ID"));
-      }
-      rs.close();
-      con.close();
-
-      // sleep to ensure that concurrent calls obtain separate Lambdas
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException ie) {
-        logger.log("interrupted while sleeping...");
-      }
-    } catch (SQLException sqle) {
-      logger.log("DB ERROR:" + sqle.toString());
-      sqle.printStackTrace();
     }
+  }
 
-    // Set return result in Response class, class is marshalled into JSON
-    //****************END FUNCTION IMPLEMENTATION***************************
+  private void insertDataIntoTable(Scanner scanner, Connection con, LambdaLogger logger) throws Exception {
+    String sql = "INSERT INTO mytable (Region, Country, [Item Type], [Sales Channel], [Order Priority], [Order Date], [Order ID], [Ship Date], [Units Sold], [Unit Price], [Unit Cost], [Total Revenue], [Total Cost], [Total Profit], [Order Processing Time], [Gross Margin]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement ps = con.prepareStatement(sql)) {
+      while (scanner.hasNextLine()) {
+        String[] words = scanner.nextLine().split(",");
+        for (int i = 0; i < words.length; i++) {
+          ps.setString(i + 1, words[i]);
+        }
+        ps.executeUpdate();
+      }
+    }
+  }
 
-    //Collect final information such as total runtime and cpu deltas.
-    inspector.inspectAllDeltas();
-    return inspector.finish();
+  private LinkedList<String> queryTable(Connection con, LambdaLogger logger) throws Exception {
+    LinkedList<String> orderIDs = new LinkedList<>();
+    try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
+        ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        orderIDs.add(rs.getString("Order ID"));
+      }
+    }
+    return orderIDs;
   }
 
   public static boolean setCurrentDirectory(String directory_name) {
@@ -153,12 +110,9 @@ public class HelloSqlite
 
     directory = new File(directory_name).getAbsoluteFile();
     if (directory.exists() || directory.mkdirs()) {
-      result =
-        (System.setProperty("user.dir", directory.getAbsolutePath()) != null);
+      result = (System.setProperty("user.dir", directory.getAbsolutePath()) != null);
     }
 
     return result;
   }
 }
-
- 
