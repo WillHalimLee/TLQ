@@ -1,45 +1,24 @@
-package lambda;
-
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.text.ParseException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+public class CSVParser {
+    public static void main(String[] args) {
+        String inputFilePath = "./data.csv";
+        String outputFilePath = "./output.csv";
 
-public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
-
-    @Override
-    public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
-        LambdaLogger logger = context.getLogger();
-        String inputFilePath = "/tmp/data.csv"; // Adjusted for Lambda's writable tmp directory
-        String outputFilePath = "/tmp/output.csv"; // Adjusted for Lambda's writable tmp directory
-
-        HashMap<String, Object> response = new HashMap<>();
-
-        try {
-            processCsvFile(inputFilePath, outputFilePath);
-            uploadToS3(outputFilePath, "462projectbucket", "output.csv"); // Replace with your bucket name and object key
-            response.put("message", "File processed and uploaded successfully");
-        } catch (IOException | ParseException | AmazonServiceException e) {
-            logger.log("Error: " + e.getMessage());
-            response.put("error", e.getMessage());
-        }
-
-        return response;
-    }
-
-    private void processCsvFile(String inputFilePath, String outputFilePath) throws IOException, ParseException {
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
-             PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
-            
+        try (
+            BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+            PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))
+        ) {
             String line = br.readLine(); // Read the header
             List<String> headers = new ArrayList<>(Arrays.asList(line.split(",")));
 
@@ -83,13 +62,25 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
                     pw.println(String.join(",", newValues));
                 }
             }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
-    }
 
-    private void uploadToS3(String filePath, String bucketName, String keyName) throws AmazonServiceException {
+        // Upload to S3
+        String bucketName = "462projectbucket";
+        String fileObjKeyName = "output.csv";
+        String fileName = "./output.csv";
+
+        // Assuming AWS credentials are set in environment variables or AWS credentials file
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                                 .withRegion("us-east-1") // Replace with your region
                                 .build();
-        s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
+
+        try {
+            s3Client.putObject(new PutObjectRequest(bucketName, fileObjKeyName, new File(fileName)));
+            System.out.println("File uploaded successfully");
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+        }
     }
 }
