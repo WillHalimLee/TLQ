@@ -84,7 +84,7 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
                     // Add new data to the line
                     List<String> newValues = new ArrayList<>(Arrays.asList(values));
                     newValues.add(String.valueOf(processingTime));
-                    newValues.add(String.format(Locale.US, "%.2f", grossMargin)); // Assuming US locale for decimal point
+                    newValues.add(String.format(Locale.US, "%.2f", grossMargin)); 
                     newValues.set(4, orderPriority); // Set transformed priority
                     
                     // Write the new line
