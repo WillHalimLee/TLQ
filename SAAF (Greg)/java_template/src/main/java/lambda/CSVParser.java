@@ -4,19 +4,28 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.text.ParseException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 
 public class CSVParser {
     public static void main(String[] args) {
-        String inputFilePath = "./data.csv";
-        String outputFilePath = "./output.csv";
+        // S3 Bucket and File Details
+        String bucketName = "462projectbucket"; // Replace with your actual bucket name
+        String inputFileKey = "data.csv"; // Replace with the actual S3 key for the input file
+        String outputFileKey = "output.csv"; // Replace with the desired S3 key for the output file
+        String outputFilePath = "output.csv";
+
+        // Create S3 client
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                                .withRegion("us-east-2") 
+                                .build();
 
         try (
-            BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+            // Download file from S3 and setup BufferedReader
+            S3Object s3object = s3Client.getObject(bucketName, inputFileKey);
+            BufferedReader br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
             PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))
         ) {
             String line = br.readLine(); // Read the header
@@ -67,17 +76,8 @@ public class CSVParser {
         }
 
         // Upload to S3
-        String bucketName = "462projectbucket";
-        String fileObjKeyName = "output.csv";
-        String fileName = "./output.csv";
-
-        // Assuming AWS credentials are set in environment variables or AWS credentials file
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                                .withRegion("us-east-1") // Replace with your region
-                                .build();
-
         try {
-            s3Client.putObject(new PutObjectRequest(bucketName, fileObjKeyName, new File(fileName)));
+            s3Client.putObject(new PutObjectRequest(bucketName, outputFileKey, new File(outputFilePath)));
             System.out.println("File uploaded successfully");
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());

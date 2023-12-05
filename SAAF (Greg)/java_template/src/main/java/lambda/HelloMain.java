@@ -7,7 +7,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-
+import com.amazonaws.services.s3.model.S3Object;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -19,14 +19,25 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
     @Override
     public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
         LambdaLogger logger = context.getLogger();
-        String inputFilePath = "/tmp/data.csv"; // Adjusted for Lambda's writable tmp directory
-        String outputFilePath = "/tmp/output.csv"; // Adjusted for Lambda's writable tmp directory
+        String bucketName = "462projectbucket"; // Replace with your actual bucket name
+        String inputFileKey = "data.csv"; // Replace with the actual S3 key for the input file
+        String outputFileKey = "output.csv"; // Replace with the desired S3 key for the output file
+        String outputFilePath = "/tmp/output.csv"; // Temporary file path in Lambda's writable directory
 
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("us-east-2").build();
         HashMap<String, Object> response = new HashMap<>();
 
         try {
-            processCsvFile(inputFilePath, outputFilePath);
-            uploadToS3(outputFilePath, "462projectbucket", "output.csv"); // Replace with your bucket name and object key
+            // Download file from S3 and setup BufferedReader
+            S3Object s3object = s3Client.getObject(bucketName, inputFileKey);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+                 PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
+
+                processCsvFile(br, pw);
+            }
+
+            // Upload processed file to S3
+            uploadToS3(outputFilePath, bucketName, outputFileKey, s3Client); // Using the same s3Client instance
             response.put("message", "File processed and uploaded successfully");
         } catch (IOException | ParseException | AmazonServiceException e) {
             logger.log("Error: " + e.getMessage());
@@ -36,24 +47,21 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
         return response;
     }
 
-    private void processCsvFile(String inputFilePath, String outputFilePath) throws IOException, ParseException {
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
-             PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
-            
-            String line = br.readLine(); // Read the header
-            List<String> headers = new ArrayList<>(Arrays.asList(line.split(",")));
+    private void processCsvFile(BufferedReader br, PrintWriter pw) throws IOException, ParseException {
+        String line = br.readLine(); // Read the header
+        List<String> headers = new ArrayList<>(Arrays.asList(line.split(",")));
 
-            // Add new columns
-            headers.add("Order Processing Time");
-            headers.add("Gross Margin");
-            pw.println(String.join(",", headers));
+        // Add new columns
+        headers.add("Order Processing Time");
+        headers.add("Gross Margin");
+        pw.println(String.join(",", headers));
 
-            Set<String> processedOrderIds = new HashSet<>();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+        Set<String> processedOrderIds = new HashSet<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
 
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                if (processedOrderIds.add(values[6])) { // Check for duplicate Order ID
+        while ((line = br.readLine()) != null) {
+            String[] values = line.split(",");
+            if (processedOrderIds.add(values[6])) {
                     // Calculate Order Processing Time
                     Date orderDate = dateFormat.parse(values[5]);
                     Date shipDate = dateFormat.parse(values[7]);
@@ -84,12 +92,9 @@ public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMa
                 }
             }
         }
+		private void uploadToS3(String filePath, String bucketName, String keyName, AmazonS3 s3Client) throws AmazonServiceException {
+			s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
+		}
     }
 
-    private void uploadToS3(String filePath, String bucketName, String keyName) throws AmazonServiceException {
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                                .withRegion("us-east-1") // Replace with your region
-                                .build();
-        s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
-    }
-}
+    
