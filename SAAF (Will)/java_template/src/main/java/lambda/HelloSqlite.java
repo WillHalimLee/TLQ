@@ -16,8 +16,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import saaf.Inspector;
 
@@ -51,7 +53,7 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
 
         ensureTableExists(con, logger);
         insertDataIntoTable(scanner, con, logger);
-        response.put("OrderIDs", queryTable(con, logger));
+        response.put("Data", queryDatabase(con, logger));
       } catch (Exception e) {
         logger.log("Database or S3 Error: " + e.getMessage());
         response.put("error", e.getMessage());
@@ -93,15 +95,32 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
     }
   }
 
-  private LinkedList<String> queryTable(Connection con, LambdaLogger logger) throws Exception {
-    LinkedList<String> orderIDs = new LinkedList<>();
-    try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
-        ResultSet rs = ps.executeQuery()) {
+  private List<HashMap<String, Object>> queryDatabase(Connection con, LambdaLogger logger) throws Exception {
+    List<HashMap<String, Object>> allData = new ArrayList<>();
+    String query = "SELECT * FROM mytable";
+    try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        orderIDs.add(rs.getString("Order ID"));
+        HashMap<String, Object> row = new HashMap<>();
+        row.put("Region", rs.getString("Region"));
+        row.put("Country", rs.getString("Country"));
+        row.put("Item Type", rs.getString("Item Type"));
+        row.put("Sales Channel", rs.getString("Sales Channel"));
+        row.put("Order Priority", rs.getString("Order Priority"));
+        row.put("Order Date", rs.getString("Order Date"));
+        row.put("Order ID", rs.getString("Order ID"));
+        row.put("Ship Date", rs.getString("Ship Date"));
+        row.put("Units Sold", rs.getString("Units Sold"));
+        row.put("Unit Price", rs.getString("Unit Price"));
+        row.put("Unit Cost", rs.getString("Unit Cost"));
+        row.put("Total Revenue", rs.getString("Total Revenue"));
+        row.put("Total Cost", rs.getString("Total Cost"));
+        row.put("Total Profit", rs.getString("Total Profit"));
+        row.put("Order Processing Time", rs.getString("Order Processing Time"));
+        row.put("Gross Margin", rs.getString("Gross Margin"));
+        allData.add(row);
       }
     }
-    return orderIDs;
+    return allData;
   }
 
   public static boolean setCurrentDirectory(String directory_name) {
@@ -115,4 +134,15 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
 
     return result;
   }
+
+  // private LinkedList<String> queryTable(Connection con, LambdaLogger logger) throws Exception {
+  //   LinkedList<String> orderIDs = new LinkedList<>();
+  //   try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
+  //       ResultSet rs = ps.executeQuery()) {
+  //     while (rs.next()) {
+  //       orderIDs.add(rs.getString("Order ID"));
+  //     }
+  //   }
+  //   return orderIDs;
+  // }
 }
