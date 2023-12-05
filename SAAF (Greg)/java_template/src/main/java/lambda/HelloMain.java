@@ -1,140 +1,100 @@
 package lambda;
 
-import com.amazonaws.services.lambda.runtime.ClientContext;
-import com.amazonaws.services.lambda.runtime.CognitoIdentity;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import saaf.Inspector;
-import saaf.Response;
-import java.util.HashMap;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-/**
- * uwt.lambda_test::handleRequest
- *
- * @author Wes Lloyd
- * @author Robert Cordingly
- */
 public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
 
-    /**
-     * Lambda Function Handler
-     * 
-     * @param request Hashmap containing request JSON attributes.
-     * @param context 
-     * @return HashMap that Lambda will automatically convert into JSON.
-     */
+    @Override
     public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
-        
-        //Collect inital data.
-        Inspector inspector = new Inspector();
-        inspector.inspectAll();
-        
-        //****************START FUNCTION IMPLEMENTATION*************************
-        
-        //Add custom key/value attribute to SAAF's output. (OPTIONAL)
-        inspector.addAttribute("message", "Hello " + request.get("name")
-                + "! This is a custom attribute added as output from SAAF!");
-        
-        //Create and populate a separate response object for function output. (OPTIONAL)
-        Response response = new Response();
-        response.setValue("Hello " + request.get("name")
-                + "! This is from a response object!");
-        
-        inspector.consumeResponse(response);
-        
-        //****************END FUNCTION IMPLEMENTATION***************************
-                
-        //Collect final information such as total runtime and cpu deltas.
-        inspector.inspectAllDeltas();
-        return inspector.finish();
+        LambdaLogger logger = context.getLogger();
+        String bucketName = "462projectbucket"; 
+        String inputFileKey = "data.csv"; 
+        String outputFileKey = "output.csv"; 
+        String outputFilePath = "/tmp/output.csv"; 
+
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("us-east-2").build();
+        HashMap<String, Object> response = new HashMap<>();
+
+        try {
+            // Download file from S3 and setup BufferedReader
+            S3Object s3object = s3Client.getObject(bucketName, inputFileKey);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
+                 PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
+
+                processCsvFile(br, pw);
+            }
+
+            // Upload processed file to S3
+            uploadToS3(outputFilePath, bucketName, outputFileKey, s3Client); // Using the same s3Client instance
+            response.put("message", "File processed and uploaded successfully");
+        } catch (IOException | ParseException | AmazonServiceException e) {
+            logger.log("Error: " + e.getMessage());
+            response.put("error", e.getMessage());
+        }
+
+        return response;
     }
-    
-    public static void main (String[] args)
-    {
-        Context c = new Context() {
-            @Override
-            public String getAwsRequestId() {
-                return "";
-            }
 
-            @Override
-            public String getLogGroupName() {
-                return "";
-            }
+    private void processCsvFile(BufferedReader br, PrintWriter pw) throws IOException, ParseException {
+        String line = br.readLine(); // Read the header
+        List<String> headers = new ArrayList<>(Arrays.asList(line.split(",")));
 
-            @Override
-            public String getLogStreamName() {
-                return "";
-            }
+        // Add new columns
+        headers.add("Order Processing Time");
+        headers.add("Gross Margin");
+        pw.println(String.join(",", headers));
 
-            @Override
-            public String getFunctionName() {
-                return "";
-            }
+        Set<String> processedOrderIds = new HashSet<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
 
-            @Override
-            public String getFunctionVersion() {
-                return "";
-            }
+        while ((line = br.readLine()) != null) {
+            String[] values = line.split(",");
+            if (processedOrderIds.add(values[6])) {
+                    // Calculate Order Processing Time
+                    Date orderDate = dateFormat.parse(values[5]);
+                    Date shipDate = dateFormat.parse(values[7]);
+                    long processingTime = TimeUnit.DAYS.convert(shipDate.getTime() - orderDate.getTime(), TimeUnit.MILLISECONDS);
 
-            @Override
-            public String getInvokedFunctionArn() {
-                return "";
-            }
-
-            @Override
-            public CognitoIdentity getIdentity() {
-                return null;
-            }
-
-            @Override
-            public ClientContext getClientContext() {
-                return null;
-            }
-
-            @Override
-            public int getRemainingTimeInMillis() {
-                return 0;
-            }
-
-            @Override
-            public int getMemoryLimitInMB() {
-                return 0;
-            }
-
-            @Override
-            public LambdaLogger getLogger() {
-                return new LambdaLogger() {
-                    @Override
-                    public void log(String string) {
-                        System.out.println("LOG:" + string);
+                    // Transform Order Priority
+                    String orderPriority = values[4];
+                    switch (orderPriority) {
+                        case "L": orderPriority = "Low"; break;
+                        case "M": orderPriority = "Medium"; break;
+                        case "H": orderPriority = "High"; break;
+                        case "C": orderPriority = "Critical"; break;
                     }
-                };
-            }
-        };
-        
-        HelloMain hm = new HelloMain();
-        
-        // Create a request hash map
-        HashMap req = new HashMap();
-        
-        // Grab the name from the cmdline from arg 0
-        String name = (args.length > 0 ? args[0] : "");
 
-        // Load the name into the request hashmap
-        req.put("name", name);
-        
-        // Report name to stdout
-        System.out.println("cmd-line param name=" + req.get("name"));
-        
-        // Run the function
-        HashMap resp = hm.handleRequest(req, c);        
-        
-        // Print out function result
-        System.out.println("function result:" + resp.toString());
-        
-        
-        
+                    // Calculate Gross Margin
+                    double totalProfit = Double.parseDouble(values[13]);
+                    double totalRevenue = Double.parseDouble(values[11]);
+                    double grossMargin = totalProfit / totalRevenue;
+
+                    // Add new data to the line
+                    List<String> newValues = new ArrayList<>(Arrays.asList(values));
+                    newValues.add(String.valueOf(processingTime));
+                    newValues.add(String.format(Locale.US, "%.2f", grossMargin)); 
+                    newValues.set(4, orderPriority); // Set transformed priority
+                    
+                    // Write the new line
+                    pw.println(String.join(",", newValues));
+                }
+            }
+        }
+		private void uploadToS3(String filePath, String bucketName, String keyName, AmazonS3 s3Client) throws AmazonServiceException {
+			s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
+		}
     }
-}
+
+    
