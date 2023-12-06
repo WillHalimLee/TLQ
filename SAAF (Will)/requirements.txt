@@ -1,8 +1,0 @@
-boto3
-botocore
-tqdm
-numpy
-pandas
-matplotlib
-kaleido
-plotly==5.3.1
