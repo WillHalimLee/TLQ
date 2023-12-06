@@ -7,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
 import java.io.File;
@@ -39,6 +40,9 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
    * @param context
    * @return HashMap that Lambda will automatically convert into JSON.
    */
+  private static final String SQLITE_FILE_PATH = "/tmp/mydatabase.db";
+  private String S3_BUCKET_NAME = ""; // Change to your S3 bucket name
+
   @Override
   public HashMap<String, Object> handleRequest(Request request, Context context) {
     LambdaLogger logger = context.getLogger();
@@ -47,19 +51,19 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
     try {
       AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
       S3Object s3Object = s3Client.getObject(new GetObjectRequest(request.getBucketname(), request.getFilename()));
-      try (Connection con = DriverManager.getConnection("jdbc:sqlite:");
+      S3_BUCKET_NAME = request.getBucketname();
+      try (Connection con = DriverManager.getConnection("jdbc:sqlite:" + SQLITE_FILE_PATH);
           InputStream objectData = s3Object.getObjectContent();
           Scanner scanner = new Scanner(objectData)) {
 
         ensureTableExists(con, logger);
         insertDataIntoTable(scanner, con, logger);
         response.put("Data", queryDatabase(con, logger));
+        uploadDatabaseToS3(s3Client, logger); // Upload database to S3
       } catch (Exception e) {
         logger.log("Database or S3 Error: " + e.getMessage());
         response.put("error", e.getMessage());
       }
-
-      Thread.sleep(200); // Ensuring separate Lambda instances for concurrent calls
     } catch (Exception e) {
       logger.log("Error: " + e.getMessage());
       response.put("error", e.getMessage());
@@ -135,14 +139,24 @@ public class HelloSqlite implements RequestHandler<Request, HashMap<String, Obje
     return result;
   }
 
-  // private LinkedList<String> queryTable(Connection con, LambdaLogger logger) throws Exception {
-  //   LinkedList<String> orderIDs = new LinkedList<>();
-  //   try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
-  //       ResultSet rs = ps.executeQuery()) {
-  //     while (rs.next()) {
-  //       orderIDs.add(rs.getString("Order ID"));
-  //     }
-  //   }
-  //   return orderIDs;
+  private void uploadDatabaseToS3(AmazonS3 s3Client, LambdaLogger logger) {
+    try {
+      File dbFile = new File(SQLITE_FILE_PATH);
+      s3Client.putObject(new PutObjectRequest(S3_BUCKET_NAME, "mydatabase.db", dbFile));
+      logger.log("Database uploaded to S3 successfully.");
+    } catch (Exception e) {
+      logger.log("Error uploading database to S3: " + e.getMessage());
+    }
+  }
+  // private LinkedList<String> queryTable(Connection con, LambdaLogger logger)
+  // throws Exception {
+  // LinkedList<String> orderIDs = new LinkedList<>();
+  // try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
+  // ResultSet rs = ps.executeQuery()) {
+  // while (rs.next()) {
+  // orderIDs.add(rs.getString("Order ID"));
+  // }
+  // }
+  // return orderIDs;
   // }
 }
