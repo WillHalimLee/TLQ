@@ -14,7 +14,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class HelloMain implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
+public class Transform implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
 
     @Override
     public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
