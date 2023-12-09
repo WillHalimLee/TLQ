@@ -14,10 +14,10 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class Transform implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
+public class Transform implements RequestHandler<Map<String, Object>, Map<String, Object>> {
 
     @Override
-    public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
+    public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
         LambdaLogger logger = context.getLogger();
         String bucketName = "test.bucket.462.termproject"; // Replace with your actual bucket name
         String inputFileKey = "100 Sales Records.csv"; // Replace with the actual S3 key for the input file
@@ -25,7 +25,7 @@ public class Transform implements RequestHandler<HashMap<String, Object>, HashMa
         String outputFilePath = "/tmp/output.csv";
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("us-east-2").build();
-        HashMap<String, Object> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
         try {
             // Download file from S3 and setup BufferedReader
@@ -92,6 +92,7 @@ public class Transform implements RequestHandler<HashMap<String, Object>, HashMa
                 }
             }
         }
+
 		private void uploadToS3(String filePath, String bucketName, String keyName, AmazonS3 s3Client) throws AmazonServiceException {
 			s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
 		}

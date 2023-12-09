@@ -1,6 +1,5 @@
 package lambda;
 
-import com.amazonaws.Response;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -11,65 +10,66 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import saaf.Inspector;
 
-;
+public class Load implements RequestHandler<Map<String, Object>, Map<String, Object>> {
+    private final String bucketname = "test.bucket.462.termproject";
+    private final String filename = "output.csv";
+    private static final String SQLITE_FILE_PATH = "/tmp/mydatabase.db";
+    private String S3_BUCKET_NAME = "tcss462.sqlite";
 
-/**
- * uwt.lambda_test::handleRequest
- *
- * @author Wes Lloyd
- * @author Robert Cordingly
- */
-public class HelloSqlite implements RequestHandler<Request, HashMap<String, Object>> {
-  /**
-   * Lambda Function Handler
-   *
-   * @param request Request POJO with defined variables from Request.java
-   * @param context
-   * @return HashMap that Lambda will automatically convert into JSON.
-   */
-  private static final String SQLITE_FILE_PATH = "/tmp/mydatabase.db";
-  private String S3_BUCKET_NAME = "tcss462.sqlite"; // Change to your S3 bucket name
+    @Override
+    public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
+        LambdaLogger logger = context.getLogger();
+        HashMap<String, Object> response = new HashMap<>();
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
+        try {
+            File localFile = new File("/tmp/" + filename);
+            if (!localFile.exists()) {
+                S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucketname, filename));
+                try (InputStream objectData = s3Object.getObjectContent();
+                     FileOutputStream outputStream = new FileOutputStream(localFile)) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = objectData.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
+                    }
+                }
+            }
 
-  @Override
-  public HashMap<String, Object> handleRequest(Request request, Context context) {
-    LambdaLogger logger = context.getLogger();
-    HashMap<String, Object> response = new HashMap<>();
+            try (Connection con = DriverManager.getConnection("jdbc:sqlite:" + SQLITE_FILE_PATH);
+                 Scanner scanner = new Scanner(new FileInputStream(localFile))) {
 
-    try {
-      AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
-      S3Object s3Object = s3Client.getObject(new GetObjectRequest(request.getBucketname(), request.getFilename()));
-      try (Connection con = DriverManager.getConnection("jdbc:sqlite:" + SQLITE_FILE_PATH);
-          InputStream objectData = s3Object.getObjectContent();
-          Scanner scanner = new Scanner(objectData)) {
+                ensureTableExists(con, logger);
+                insertDataIntoTable(scanner, con, logger);
+                response.put("Data", queryDatabase(con, logger));
+                uploadDatabaseToS3(s3Client, logger); // Upload database to S3
+            } catch (Exception e) {
+                logger.log("Database or File Error: " + e.getMessage());
+                response.put("error", e.getMessage());
+            }
+        } catch (Exception e) {
+            logger.log("Error: " + e.getMessage());
+            response.put("error", e.getMessage());
+        }
 
-        ensureTableExists(con, logger);
-        insertDataIntoTable(scanner, con, logger);
-        response.put("Data", queryDatabase(con, logger));
-        uploadDatabaseToS3(s3Client, logger); // Upload database to S3
-      } catch (Exception e) {
-        logger.log("Database or S3 Error: " + e.getMessage());
-        response.put("error", e.getMessage());
-      }
-    } catch (Exception e) {
-      logger.log("Error: " + e.getMessage());
-      response.put("error", e.getMessage());
+        return response;
     }
 
-    return response;
-  }
+    // Existing methods: ensureTableExists, insertDataIntoTable, queryDatabase, uploadDatabaseToS3
+    // ...
 
   private void ensureTableExists(Connection con, LambdaLogger logger) throws Exception {
     try (PreparedStatement ps = con
