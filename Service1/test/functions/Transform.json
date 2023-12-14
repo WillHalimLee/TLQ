@@ -1,0 +1,6 @@
+{
+    "function": "Transform",
+    "platform": "AWS Lambda",
+    "source": "../java_template",
+    "endpoint": ""
+}
