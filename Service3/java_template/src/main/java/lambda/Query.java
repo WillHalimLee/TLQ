@@ -22,11 +22,8 @@ public class Query implements RequestHandler<Map<String, Object>, Map<String, Ob
         LambdaLogger logger = context.getLogger();
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         List<Map<String, Object>> queryResults = new ArrayList<>();
-
+        //Go straight to s3 bucket for database.
         try {
-            // Check for local DB file or download from S3
-            File dbFile = new File(SQLITE_FILE_PATH);
-            if (!dbFile.exists()) {
                 S3Object s3Object = s3Client.getObject(new GetObjectRequest(S3_BUCKET_NAME, S3_OBJECT_KEY));
                 try (InputStream objectData = s3Object.getObjectContent();
                      OutputStream outputStream = new FileOutputStream(SQLITE_FILE_PATH)) {
@@ -36,7 +33,7 @@ public class Query implements RequestHandler<Map<String, Object>, Map<String, Ob
                         outputStream.write(buffer, 0, length);
                     }
                 }
-            }
+            
 
             // Load the SQLite JDBC driver
             Class.forName("org.sqlite.JDBC");
