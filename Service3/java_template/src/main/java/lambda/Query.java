@@ -22,7 +22,7 @@ public class Query implements RequestHandler<Map<String, Object>, Map<String, Ob
         LambdaLogger logger = context.getLogger();
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         List<Map<String, Object>> queryResults = new ArrayList<>();
-
+        //Go straight to s3 bucket for database.
         try {
                 S3Object s3Object = s3Client.getObject(new GetObjectRequest(S3_BUCKET_NAME, S3_OBJECT_KEY));
                 try (InputStream objectData = s3Object.getObjectContent();
