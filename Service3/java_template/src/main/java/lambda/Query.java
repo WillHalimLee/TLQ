@@ -7,6 +7,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+
+import saaf.Inspector;
+
 import java.sql.*;
 import java.util.*;
 import java.io.*;
@@ -19,6 +22,14 @@ public class Query implements RequestHandler<Map<String, Object>, Map<String, Ob
 
     @Override
     public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
+        //Collect initial data.
+        Inspector inspector = new Inspector();
+        inspector.inspectAll();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            System.out.println("Interruption occurred while sleeping...");
+        }
         LambdaLogger logger = context.getLogger();
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         List<Map<String, Object>> queryResults = new ArrayList<>();
@@ -66,7 +77,10 @@ public class Query implements RequestHandler<Map<String, Object>, Map<String, Ob
 
         Map<String, Object> response = new HashMap<>();
         response.put("queryResults", queryResults);
-        return response;
+
+        //Collect final information such as total runtime and cpu deltas.
+        inspector.inspectAllDeltas();
+        return inspector.finish();
     }
 
     private String constructSQLQuery(Map<String, Object> request) {

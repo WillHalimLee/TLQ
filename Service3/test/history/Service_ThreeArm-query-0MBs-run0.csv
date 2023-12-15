@@ -1,0 +1,49 @@
+2023-12-14 04:00:44.607585 - Python Partest Version 0.5
+Setting up test: runsperthread=1 threads=1 totalruns=1 payload=[{'aggregations': ['SUM("Total Profit") AS total_profit'] 'filters': {'"Order Priority"': 'High'} 'groupBy': ['Region']}]
+
+Raw results of each run:
+1_run_id,2_thread_id,containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdle,cpuIdleDelta,cpuIowait,cpuIowaitDelta,cpuIrq,cpuIrqDelta,cpuKrn,cpuKrnDelta,cpuModel,cpuNice,cpuNiceDelta,cpuSoftIrq,cpuSoftIrqDelta,cpuType,cpuUsr,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime
+0,0,2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505,26067,10599,unknown,137741,2053,1,1,0,0,90,3,unknown,0,0,5,0,unknown - Model unknown,342,130,1702555244379,175,1,498892,512,Service_ThreeArm,us-east-2,2026.44,1013,21,1,97882,9650,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},14287.44,12261,0,1702555232118,667540,12085,8186e84c-5ca3-4d4c-b7fd-69654de73d9d,n7MsZD,0,0,1702554541
+Successful Runs: 1
+
+Category containerID:
+containerID,uses,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505,1,26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,['unknown - Model unknown'],130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,['n7MsZD'],0.00,0.00,1702554541.00
+Total number of unique containerIDs: 1
+
+Category cpuType:
+cpuType,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+unknown - Model unknown,1,['2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505'],26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,['n7MsZD'],0.00,0.00,1702554541.00
+Total number of unique cpuTypes: 1
+
+--- Runs of Group cpuType ---
+
+Category cpuType with unknown - Model unknown:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505,26067,10599,unknown,2053,1,0,3,0,0,130,1702555244379,175,1,498892,512,Service_ThreeArm,us-east-2,2026.44,1013,21,1,97882,9650,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},14287.44,12261,0,1702555232118,1,667540,12085,8186e84c-5ca3-4d4c-b7fd-69654de73d9d,n7MsZD,0,0,1702554541,unknown - Model unknown - 1
+
+Category newcontainer:
+newcontainer,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+1,1,['2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505'],26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,['unknown - Model unknown'],130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,['n7MsZD'],0.00,0.00,1702554541.00
+Total number of unique newcontainers: 1
+
+Category vmID:
+vmID,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+n7MsZD,1,['2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505'],26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,['unknown - Model unknown'],130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,0.00,0.00,1702554541.00
+Total number of unique vmIDs: 1
+
+Category zAll:
+zAll,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Final Results:,1,['2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505'],26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,['unknown - Model unknown'],130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,['n7MsZD'],0.00,0.00,1702554541.00
+Total number of unique zAlls: 1
+
+Category zTenancy[vmID]:
+zTenancy[vmID],uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+unknown - Model unknown - 1,1,['2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505'],26067.00,10599.00,2053.00,1.00,0.00,3.00,0.00,0.00,130.00,1702555244379.00,175.00,1.00,498892.00,512.00,2026.44,1013.00,21.00,1,97882.00,9650.00,14287.44,12261.00,0.00,1702555232118.00,1.00,667540.00,12085.00,['n7MsZD'],0.00,0.00,1702554541.00
+Total number of unique zTenancy[vmID]s: 1
+
+--- Runs of Group zTenancy[vmID] ---
+
+Category zTenancy[vmID] with unknown - Model unknown - 1:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]ad1b3f6df8d544cc8a527fcf2fbdf505,26067,10599,unknown,2053,1,0,3,0,0,130,1702555244379,175,1,498892,512,Service_ThreeArm,us-east-2,2026.44,1013,21,1,97882,9650,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},14287.44,12261,0,1702555232118,1,667540,12085,8186e84c-5ca3-4d4c-b7fd-69654de73d9d,n7MsZD,0,0,1702554541,unknown - Model unknown - 1

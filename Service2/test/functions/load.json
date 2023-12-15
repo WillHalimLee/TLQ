@@ -1,0 +1,6 @@
+{
+    "function": "Service_Two",
+    "platform": "AWS Lambda",
+    "source": "../java_template",
+    "endpoint": ""
+}

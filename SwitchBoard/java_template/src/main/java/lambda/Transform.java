@@ -8,6 +8,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+
+import saaf.Inspector;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -18,9 +21,10 @@ public class Transform implements RequestHandler<Map<String, Object>, Map<String
 
     @Override
     public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
+
         LambdaLogger logger = context.getLogger();
         String bucketName = "test.bucket.462.termproject"; // Replace with your actual bucket name
-        String inputFileKey = "100 Sales Records.csv"; // Replace with the actual S3 key for the input file
+        String inputFileKey = "data.csv"; // Replace with the actual S3 key for the input file
         String outputFileKey = "output.csv"; // Replace with the desired S3 key for the output file
         String outputFilePath = "/tmp/output.csv";
 
@@ -43,7 +47,6 @@ public class Transform implements RequestHandler<Map<String, Object>, Map<String
             logger.log("Error: " + e.getMessage());
             response.put("error", e.getMessage());
         }
-
         return response;
     }
 

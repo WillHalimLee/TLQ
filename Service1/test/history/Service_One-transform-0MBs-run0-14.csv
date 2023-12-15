@@ -1,0 +1,49 @@
+2023-12-14 12:27:47.343893 - Python Partest Version 0.5
+Setting up test: runsperthread=1 threads=1 totalruns=1 payload=[{}]
+
+Raw results of each run:
+1_run_id,2_thread_id,containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdle,cpuIdleDelta,cpuIowait,cpuIowaitDelta,cpuIrq,cpuIrqDelta,cpuKrn,cpuKrnDelta,cpuModel,cpuNice,cpuNiceDelta,cpuSoftIrq,cpuSoftIrqDelta,cpuType,cpuUsr,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime
+0,0,2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041,30458,18908,2,163992,5925,3,4,0,0,70,156,63,0,0,6,90,Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63,70,1706,1702585667175,49,1,1585832,1300,Service_One,us-east-2,1447.71,987,42,1,107848,58440,{},41405.71,39958,0,1702585627217,1747696,39908,0cc987f5-66e0-4cad-ac59-c99f930f2367,dWFPCw,6,9,1702584806
+Successful Runs: 1
+
+Category containerID:
+containerID,uses,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041,1,30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,['Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63'],1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,['dWFPCw'],6.00,9.00,1702584806.00
+Total number of unique containerIDs: 1
+
+Category cpuType:
+cpuType,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63,1,['2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041'],30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,['dWFPCw'],6.00,9.00,1702584806.00
+Total number of unique cpuTypes: 1
+
+--- Runs of Group cpuType ---
+
+Category cpuType with Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041,30458,18908,2,5925,4,0,156,0,90,1706,1702585667175,49,1,1585832,1300,Service_One,us-east-2,1447.71,987,42,1,107848,58440,{},41405.71,39958,0,1702585627217,1,1747696,39908,0cc987f5-66e0-4cad-ac59-c99f930f2367,dWFPCw,6,9,1702584806,Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63 - 1
+
+Category newcontainer:
+newcontainer,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+1,1,['2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041'],30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,['Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63'],1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,['dWFPCw'],6.00,9.00,1702584806.00
+Total number of unique newcontainers: 1
+
+Category vmID:
+vmID,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+dWFPCw,1,['2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041'],30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,['Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63'],1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,6.00,9.00,1702584806.00
+Total number of unique vmIDs: 1
+
+Category zAll:
+zAll,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Final Results:,1,['2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041'],30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,['Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63'],1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,['dWFPCw'],6.00,9.00,1702584806.00
+Total number of unique zAlls: 1
+
+Category zTenancy[vmID]:
+zTenancy[vmID],uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63 - 1,1,['2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041'],30458.00,18908.00,2.00,5925.00,4.00,0.00,156.00,0.00,90.00,1706.00,1702585667175.00,49.00,1.00,1585832.00,1300.00,1447.71,987.00,42.00,1,107848.00,58440.00,41405.71,39958.00,0.00,1702585627217.00,1.00,1747696.00,39908.00,['dWFPCw'],6.00,9.00,1702584806.00
+Total number of unique zTenancy[vmID]s: 1
+
+--- Runs of Group zTenancy[vmID] ---
+
+Category zTenancy[vmID] with Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63 - 1:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]0ac3c94f361949b180e389e61c60e041,30458,18908,2,5925,4,0,156,0,90,1706,1702585667175,49,1,1585832,1300,Service_One,us-east-2,1447.71,987,42,1,107848,58440,{},41405.71,39958,0,1702585627217,1,1747696,39908,0cc987f5-66e0-4cad-ac59-c99f930f2367,dWFPCw,6,9,1702584806,Intel(R) Xeon(R) Processor @ 3.00GHz - Model 63 - 1
