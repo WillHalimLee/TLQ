@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
+
 import saaf.Inspector;
 
 ;
@@ -33,42 +35,41 @@ import saaf.Inspector;
  * @author Robert Cordingly
  */
 public class Load implements RequestHandler<Request, HashMap<String, Object>> {
-  /**
-   * Lambda Function Handler
-   *
-   * @param request Request POJO with defined variables from Request.java
-   * @param context
-   * @return HashMap that Lambda will automatically convert into JSON.
-   */
-  private static final String SQLITE_FILE_PATH = "/tmp/mydatabase.db";
   private String S3_BUCKET_NAME = "tcss462.sqlite"; // Change to your S3 bucket name
 
   @Override
   public HashMap<String, Object> handleRequest(Request request, Context context) {
+    Inspector inspector = new Inspector();
+    inspector.inspectAll();
+
     LambdaLogger logger = context.getLogger();
     HashMap<String, Object> response = new HashMap<>();
+
+    // Generate a unique file name for each invocation
+    String uniqueFileName = "mydatabase_" + UUID.randomUUID() + ".db";
+    String sqliteFilePath = "/tmp/" + uniqueFileName;
 
     try {
       AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
       S3Object s3Object = s3Client.getObject(new GetObjectRequest(request.getBucketname(), request.getFilename()));
-      try (Connection con = DriverManager.getConnection("jdbc:sqlite:" + SQLITE_FILE_PATH);
+
+      try (Connection con = DriverManager.getConnection("jdbc:sqlite:" + sqliteFilePath);
           InputStream objectData = s3Object.getObjectContent();
           Scanner scanner = new Scanner(objectData)) {
 
         ensureTableExists(con, logger);
         insertDataIntoTable(scanner, con, logger);
-        response.put("Data", queryDatabase(con, logger));
-        uploadDatabaseToS3(s3Client, logger); // Upload database to S3
-      } catch (Exception e) {
-        logger.log("Database or S3 Error: " + e.getMessage());
-        response.put("error", e.getMessage());
+        // Upload database to S3
+        uploadDatabaseToS3(sqliteFilePath, uniqueFileName, s3Client, logger);
       }
     } catch (Exception e) {
       logger.log("Error: " + e.getMessage());
       response.put("error", e.getMessage());
     }
 
-    return response;
+    // Collect final information such as total runtime and cpu deltas.
+    inspector.inspectAllDeltas();
+    return inspector.finish();
   }
 
   private void ensureTableExists(Connection con, LambdaLogger logger) throws Exception {
@@ -98,33 +99,35 @@ public class Load implements RequestHandler<Request, HashMap<String, Object>> {
     }
   }
 
-  private List<HashMap<String, Object>> queryDatabase(Connection con, LambdaLogger logger) throws Exception {
-    List<HashMap<String, Object>> allData = new ArrayList<>();
-    String query = "SELECT * FROM mytable";
-    try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        HashMap<String, Object> row = new HashMap<>();
-        row.put("Region", rs.getString("Region"));
-        row.put("Country", rs.getString("Country"));
-        row.put("Item Type", rs.getString("Item Type"));
-        row.put("Sales Channel", rs.getString("Sales Channel"));
-        row.put("Order Priority", rs.getString("Order Priority"));
-        row.put("Order Date", rs.getString("Order Date"));
-        row.put("Order ID", rs.getString("Order ID"));
-        row.put("Ship Date", rs.getString("Ship Date"));
-        row.put("Units Sold", rs.getString("Units Sold"));
-        row.put("Unit Price", rs.getString("Unit Price"));
-        row.put("Unit Cost", rs.getString("Unit Cost"));
-        row.put("Total Revenue", rs.getString("Total Revenue"));
-        row.put("Total Cost", rs.getString("Total Cost"));
-        row.put("Total Profit", rs.getString("Total Profit"));
-        row.put("Order Processing Time", rs.getString("Order Processing Time"));
-        row.put("Gross Margin", rs.getString("Gross Margin"));
-        allData.add(row);
-      }
-    }
-    return allData;
-  }
+  // private List<HashMap<String, Object>> queryDatabase(Connection con,
+  // LambdaLogger logger) throws Exception {
+  // List<HashMap<String, Object>> allData = new ArrayList<>();
+  // String query = "SELECT * FROM mytable";
+  // try (PreparedStatement ps = con.prepareStatement(query); ResultSet rs =
+  // ps.executeQuery()) {
+  // while (rs.next()) {
+  // HashMap<String, Object> row = new HashMap<>();
+  // row.put("Region", rs.getString("Region"));
+  // row.put("Country", rs.getString("Country"));
+  // row.put("Item Type", rs.getString("Item Type"));
+  // row.put("Sales Channel", rs.getString("Sales Channel"));
+  // row.put("Order Priority", rs.getString("Order Priority"));
+  // row.put("Order Date", rs.getString("Order Date"));
+  // row.put("Order ID", rs.getString("Order ID"));
+  // row.put("Ship Date", rs.getString("Ship Date"));
+  // row.put("Units Sold", rs.getString("Units Sold"));
+  // row.put("Unit Price", rs.getString("Unit Price"));
+  // row.put("Unit Cost", rs.getString("Unit Cost"));
+  // row.put("Total Revenue", rs.getString("Total Revenue"));
+  // row.put("Total Cost", rs.getString("Total Cost"));
+  // row.put("Total Profit", rs.getString("Total Profit"));
+  // row.put("Order Processing Time", rs.getString("Order Processing Time"));
+  // row.put("Gross Margin", rs.getString("Gross Margin"));
+  // allData.add(row);
+  // }
+  // }
+  // return allData;
+  // }
 
   public static boolean setCurrentDirectory(String directory_name) {
     boolean result = false; // Boolean indicating whether directory was set
@@ -138,24 +141,13 @@ public class Load implements RequestHandler<Request, HashMap<String, Object>> {
     return result;
   }
 
-  private void uploadDatabaseToS3(AmazonS3 s3Client, LambdaLogger logger) {
+  private void uploadDatabaseToS3(String filePath, String fileName, AmazonS3 s3Client, LambdaLogger logger) {
     try {
-      File dbFile = new File(SQLITE_FILE_PATH);
-      s3Client.putObject(new PutObjectRequest(S3_BUCKET_NAME, "mydatabase.db", dbFile));
+      File dbFile = new File(filePath);
+      s3Client.putObject(new PutObjectRequest(S3_BUCKET_NAME, fileName, dbFile));
       logger.log("Database uploaded to S3 successfully.");
     } catch (Exception e) {
       logger.log("Error uploading database to S3: " + e.getMessage());
     }
   }
-  // private LinkedList<String> queryTable(Connection con, LambdaLogger logger)
-  // throws Exception {
-  // LinkedList<String> orderIDs = new LinkedList<>();
-  // try (PreparedStatement ps = con.prepareStatement("SELECT * FROM mytable");
-  // ResultSet rs = ps.executeQuery()) {
-  // while (rs.next()) {
-  // orderIDs.add(rs.getString("Order ID"));
-  // }
-  // }
-  // return orderIDs;
-  // }
 }

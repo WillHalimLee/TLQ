@@ -1,0 +1,6 @@
+{
+    "function": "Service_OneArm",
+    "platform": "AWS Lambda",
+    "source": "../java_template",
+    "endpoint": ""
+}

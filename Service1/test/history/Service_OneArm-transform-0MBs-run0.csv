@@ -1,0 +1,49 @@
+2023-12-14 03:57:19.675123 - Python Partest Version 0.5
+Setting up test: runsperthread=1 threads=1 totalruns=1 payload=[{}]
+
+Raw results of each run:
+1_run_id,2_thread_id,containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdle,cpuIdleDelta,cpuIowait,cpuIowaitDelta,cpuIrq,cpuIrqDelta,cpuKrn,cpuKrnDelta,cpuModel,cpuNice,cpuNiceDelta,cpuSoftIrq,cpuSoftIrqDelta,cpuType,cpuUsr,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime
+0,0,2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41,26764,10315,unknown,149043,1990,1,4,0,0,119,8,unknown,0,0,10,2,unknown - Model unknown,376,122,1702555039486,156,1,504044,512,Service_OneArm,us-east-2,1599.7,997,36,1,98386,9806,{},13498.7,11899,0,1702555027587,667540,11742,810aed80-6b17-4a7b-b534-46272d5e7d65,2OY5RG,0,0,1702554280
+Successful Runs: 1
+
+Category containerID:
+containerID,uses,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41,1,26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,['unknown - Model unknown'],122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,['2OY5RG'],0.00,0.00,1702554280.00
+Total number of unique containerIDs: 1
+
+Category cpuType:
+cpuType,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+unknown - Model unknown,1,['2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41'],26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,['2OY5RG'],0.00,0.00,1702554280.00
+Total number of unique cpuTypes: 1
+
+--- Runs of Group cpuType ---
+
+Category cpuType with unknown - Model unknown:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41,26764,10315,unknown,1990,4,0,8,0,2,122,1702555039486,156,1,504044,512,Service_OneArm,us-east-2,1599.7,997,36,1,98386,9806,{},13498.7,11899,0,1702555027587,1,667540,11742,810aed80-6b17-4a7b-b534-46272d5e7d65,2OY5RG,0,0,1702554280,unknown - Model unknown - 1
+
+Category newcontainer:
+newcontainer,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+1,1,['2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41'],26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,['unknown - Model unknown'],122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,['2OY5RG'],0.00,0.00,1702554280.00
+Total number of unique newcontainers: 1
+
+Category vmID:
+vmID,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+2OY5RG,1,['2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41'],26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,['unknown - Model unknown'],122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,0.00,0.00,1702554280.00
+Total number of unique vmIDs: 1
+
+Category zAll:
+zAll,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Final Results:,1,['2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41'],26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,['unknown - Model unknown'],122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,['2OY5RG'],0.00,0.00,1702554280.00
+Total number of unique zAlls: 1
+
+Category zTenancy[vmID]:
+zTenancy[vmID],uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+unknown - Model unknown - 1,1,['2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41'],26764.00,10315.00,1990.00,4.00,0.00,8.00,0.00,2.00,122.00,1702555039486.00,156.00,1.00,504044.00,512.00,1599.70,997.00,36.00,1,98386.00,9806.00,13498.70,11899.00,0.00,1702555027587.00,1.00,667540.00,11742.00,['2OY5RG'],0.00,0.00,1702554280.00
+Total number of unique zTenancy[vmID]s: 1
+
+--- Runs of Group zTenancy[vmID] ---
+
+Category zTenancy[vmID] with unknown - Model unknown - 1:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]c2da59d032af4971bf6acc4c34a03c41,26764,10315,unknown,1990,4,0,8,0,2,122,1702555039486,156,1,504044,512,Service_OneArm,us-east-2,1599.7,997,36,1,98386,9806,{},13498.7,11899,0,1702555027587,1,667540,11742,810aed80-6b17-4a7b-b534-46272d5e7d65,2OY5RG,0,0,1702554280,unknown - Model unknown - 1

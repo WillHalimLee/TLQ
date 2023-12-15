@@ -1,26 +1,50 @@
 package lambda;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+
+import saaf.Inspector;
 
 public class Transform implements RequestHandler<HashMap<String, Object>, HashMap<String, Object>> {
 
     @Override
     public HashMap<String, Object> handleRequest(HashMap<String, Object> request, Context context) {
+        // Collect inital data.
+        Inspector inspector = new Inspector();
+        inspector.inspectAll();
+        // Sleep for 10 seconds
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            System.out.println("Interruption occurred while sleeping...");
+        }
         LambdaLogger logger = context.getLogger();
         String bucketName = "test.bucket.462.termproject"; // Replace with your actual bucket name
-        String inputFileKey = "100 Sales Records.csv"; // Replace with the actual S3 key for the input file
+        String inputFileKey = "data.csv"; // Replace with the actual S3 key for the input file
         String outputFileKey = "output.csv"; // Replace with the desired S3 key for the output file
         String outputFilePath = "/tmp/output.csv";
 
@@ -31,7 +55,7 @@ public class Transform implements RequestHandler<HashMap<String, Object>, HashMa
             // Download file from S3 and setup BufferedReader
             S3Object s3object = s3Client.getObject(bucketName, inputFileKey);
             try (BufferedReader br = new BufferedReader(new InputStreamReader(s3object.getObjectContent()));
-                 PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
+                    PrintWriter pw = new PrintWriter(new FileWriter(outputFilePath))) {
 
                 processCsvFile(br, pw);
             }
@@ -44,7 +68,9 @@ public class Transform implements RequestHandler<HashMap<String, Object>, HashMa
             response.put("error", e.getMessage());
         }
 
-        return response;
+        // Collect final information such as total runtime and cpu deltas.
+        inspector.inspectAllDeltas();
+        return inspector.finish();
     }
 
     private void processCsvFile(BufferedReader br, PrintWriter pw) throws IOException, ParseException {
@@ -62,39 +88,48 @@ public class Transform implements RequestHandler<HashMap<String, Object>, HashMa
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
             if (processedOrderIds.add(values[6])) {
-                    // Calculate Order Processing Time
-                    Date orderDate = dateFormat.parse(values[5]);
-                    Date shipDate = dateFormat.parse(values[7]);
-                    long processingTime = TimeUnit.DAYS.convert(shipDate.getTime() - orderDate.getTime(), TimeUnit.MILLISECONDS);
+                // Calculate Order Processing Time
+                Date orderDate = dateFormat.parse(values[5]);
+                Date shipDate = dateFormat.parse(values[7]);
+                long processingTime = TimeUnit.DAYS.convert(shipDate.getTime() - orderDate.getTime(),
+                        TimeUnit.MILLISECONDS);
 
-                    // Transform Order Priority
-                    String orderPriority = values[4];
-                    switch (orderPriority) {
-                        case "L": orderPriority = "Low"; break;
-                        case "M": orderPriority = "Medium"; break;
-                        case "H": orderPriority = "High"; break;
-                        case "C": orderPriority = "Critical"; break;
-                    }
-
-                    // Calculate Gross Margin
-                    double totalProfit = Double.parseDouble(values[13]);
-                    double totalRevenue = Double.parseDouble(values[11]);
-                    double grossMargin = totalProfit / totalRevenue;
-
-                    // Add new data to the line
-                    List<String> newValues = new ArrayList<>(Arrays.asList(values));
-                    newValues.add(String.valueOf(processingTime));
-                    newValues.add(String.format(Locale.US, "%.2f", grossMargin)); 
-                    newValues.set(4, orderPriority); // Set transformed priority
-                    
-                    // Write the new line
-                    pw.println(String.join(",", newValues));
+                // Transform Order Priority
+                String orderPriority = values[4];
+                switch (orderPriority) {
+                    case "L":
+                        orderPriority = "Low";
+                        break;
+                    case "M":
+                        orderPriority = "Medium";
+                        break;
+                    case "H":
+                        orderPriority = "High";
+                        break;
+                    case "C":
+                        orderPriority = "Critical";
+                        break;
                 }
+
+                // Calculate Gross Margin
+                double totalProfit = Double.parseDouble(values[13]);
+                double totalRevenue = Double.parseDouble(values[11]);
+                double grossMargin = totalProfit / totalRevenue;
+
+                // Add new data to the line
+                List<String> newValues = new ArrayList<>(Arrays.asList(values));
+                newValues.add(String.valueOf(processingTime));
+                newValues.add(String.format(Locale.US, "%.2f", grossMargin));
+                newValues.set(4, orderPriority); // Set transformed priority
+
+                // Write the new line
+                pw.println(String.join(",", newValues));
             }
         }
-		private void uploadToS3(String filePath, String bucketName, String keyName, AmazonS3 s3Client) throws AmazonServiceException {
-			s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
-		}
     }
 
-    
+    private void uploadToS3(String filePath, String bucketName, String keyName, AmazonS3 s3Client)
+            throws AmazonServiceException {
+        s3Client.putObject(new PutObjectRequest(bucketName, keyName, new File(filePath)));
+    }
+}

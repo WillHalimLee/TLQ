@@ -1,0 +1,49 @@
+2023-12-14 03:37:52.782145 - Python Partest Version 0.5
+Setting up test: runsperthread=1 threads=1 totalruns=1 payload=[{'aggregations': ['SUM("Total Profit") AS total_profit'] 'filters': {'"Order Priority"': 'High'} 'groupBy': ['Region']}]
+
+Raw results of each run:
+1_run_id,2_thread_id,containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdle,cpuIdleDelta,cpuIowait,cpuIowaitDelta,cpuIrq,cpuIrqDelta,cpuKrn,cpuKrnDelta,cpuModel,cpuNice,cpuNiceDelta,cpuSoftIrq,cpuSoftIrqDelta,cpuType,cpuUsr,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime
+0,0,2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda,34030,11683,2,30541,2363,4,2,0,0,129,39,63,0,0,9,2,Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63,425,300,1702553872583,81,0,498728,512,Service_Three,us-east-2,1099.0,1084,0,0,136366,15161,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},15098.0,13999,0,1702553858584,674032,13918,b9c44b13-3eca-47d4-8f88-77e4fec6d548,rceURN,11,7,1702553702
+Successful Runs: 1
+
+Category containerID:
+containerID,uses,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda,1,34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,['Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63'],300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,['rceURN'],11.00,7.00,1702553702.00
+Total number of unique containerIDs: 1
+
+Category cpuType:
+cpuType,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63,1,['2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda'],34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,['rceURN'],11.00,7.00,1702553702.00
+Total number of unique cpuTypes: 1
+
+--- Runs of Group cpuType ---
+
+Category cpuType with Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda,34030,11683,2,2363,2,0,39,0,2,300,1702553872583,81,0,498728,512,Service_Three,us-east-2,1099.0,1084,0,0,136366,15161,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},15098.0,13999,0,1702553858584,1,674032,13918,b9c44b13-3eca-47d4-8f88-77e4fec6d548,rceURN,11,7,1702553702,Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63 - 1
+
+Category newcontainer:
+newcontainer,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+0,1,['2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda'],34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,['Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63'],300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,['rceURN'],11.00,7.00,1702553702.00
+Total number of unique newcontainers: 1
+
+Category vmID:
+vmID,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+rceURN,1,['2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda'],34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,['Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63'],300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,11.00,7.00,1702553702.00
+Total number of unique vmIDs: 1
+
+Category zAll:
+zAll,uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,cpuType_list,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Final Results:,1,['2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda'],34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,['Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63'],300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,['rceURN'],11.00,7.00,1702553702.00
+Total number of unique zAlls: 1
+
+Category zTenancy[vmID]:
+zTenancy[vmID],uses,containerID_list,avg_contextSwitches,avg_contextSwitchesDelta,avg_cpuCores,avg_cpuIdleDelta,avg_cpuIowaitDelta,avg_cpuIrqDelta,avg_cpuKrnDelta,avg_cpuNiceDelta,avg_cpuSoftIrqDelta,avg_cpuUsrDelta,avg_endTime,avg_frameworkRuntime,avg_frameworkRuntimeDeltas,avg_freeMemory,avg_functionMemory,avg_latency,avg_majorPageFaults,avg_majorPageFaultsDelta,sum_newcontainer,avg_pageFaults,avg_pageFaultsDelta,avg_roundTripTime,avg_runtime,avg_runtimeOverlap,avg_startTime,avg_tenants[vmID],avg_totalMemory,avg_userRuntime,vmID_list,avg_vmcpusteal,avg_vmcpustealDelta,avg_vmuptime
+Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63 - 1,1,['2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda'],34030.00,11683.00,2.00,2363.00,2.00,0.00,39.00,0.00,2.00,300.00,1702553872583.00,81.00,0.00,498728.00,512.00,1099.00,1084.00,0.00,0,136366.00,15161.00,15098.00,13999.00,0.00,1702553858584.00,1.00,674032.00,13918.00,['rceURN'],11.00,7.00,1702553702.00
+Total number of unique zTenancy[vmID]s: 1
+
+--- Runs of Group zTenancy[vmID] ---
+
+Category zTenancy[vmID] with Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63 - 1:
+containerID,contextSwitches,contextSwitchesDelta,cpuCores,cpuIdleDelta,cpuIowaitDelta,cpuIrqDelta,cpuKrnDelta,cpuNiceDelta,cpuSoftIrqDelta,cpuUsrDelta,endTime,frameworkRuntime,frameworkRuntimeDeltas,freeMemory,functionMemory,functionName,functionRegion,latency,majorPageFaults,majorPageFaultsDelta,newcontainer,pageFaults,pageFaultsDelta,payload,roundTripTime,runtime,runtimeOverlap,startTime,tenants[vmID],totalMemory,userRuntime,uuid,vmID,vmcpusteal,vmcpustealDelta,vmuptime,zTenancy[vmID]
+2023/12/14/[$LATEST]6c2148965bef49f887ccdb07aabb4eda,34030,11683,2,2363,2,0,39,0,2,300,1702553872583,81,0,498728,512,Service_Three,us-east-2,1099.0,1084,0,0,136366,15161,{"aggregations": ["SUM(\"Total Profit\") AS total_profit"]; "filters": {"\"Order Priority\"": "High"}; "groupBy": ["Region"]},15098.0,13999,0,1702553858584,1,674032,13918,b9c44b13-3eca-47d4-8f88-77e4fec6d548,rceURN,11,7,1702553702,Intel(R) Xeon(R) Processor @ 2.50GHz - Model 63 - 1

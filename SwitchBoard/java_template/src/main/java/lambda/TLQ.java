@@ -2,6 +2,9 @@ package lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+import saaf.Inspector;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,22 +13,35 @@ public class TLQ implements RequestHandler<Map<String, Object>, Map<String, Obje
     private final Load loadProcess = new Load();
     private final Transform transformProcess = new Transform();
     private final Query queryProcess = new Query();
+
     @Override
     public Map<String, Object> handleRequest(Map<String, Object> request, Context context) {
+        Inspector inspector = new Inspector();
+        inspector.inspectAll();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            System.out.println("Interruption occurred while sleeping...");
+        }
         String action = (String) request.get("action");
-
         switch (action) {
             case "transform":
-                return transformProcess.handleRequest(request, context);
+                transformProcess.handleRequest(request, context);
+                inspector.inspectAllDeltas();
+                return inspector.finish();
             case "load":
-                return loadProcess.handleRequest(request, context); 
+                loadProcess.handleRequest(request, context);
+                inspector.inspectAllDeltas();
+                return inspector.finish();
             case "query":
-                return queryProcess.handleRequest(request, context);
+                queryProcess.handleRequest(request, context);
+                inspector.inspectAllDeltas();
+                return inspector.finish();
             default:
-                Map<String, Object> response = new HashMap<>();
-                response.put("error", "Invalid action");
-                return response;
+                inspector.inspectAllDeltas();
+                return inspector.finish();
         }
+
     }
 
 }
